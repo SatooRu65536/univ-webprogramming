@@ -1,0 +1,31 @@
+name: web-programming
+
+services:
+  app:
+    build: ./.devcontainer
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+
+  db:
+    image: mysql:8
+    command: --collation-server=utf8mb4_0900_bin
+      --transaction-isolation=READ-COMMITTED
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: app
+      TZ: Asia/Tokyo
+    ports:
+      - 53306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+
+volumes:
+  mysql-data:
